@@ -2,6 +2,7 @@ package main
 
 import (
 	"math"
+	"math/rand"
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
@@ -122,7 +123,14 @@ func apply_rules(char string) string {
 	if char == "F" {
 		newstr = "FF"
 	} else if char == "X" {
-		newstr = "F[+X]F[-X]+X"
+		rand_num := rand.Intn(100-1+1) + 1
+		if rand_num <= 30 {
+			newstr = "F[+X]F[-X]+X"
+		} else if rand_num > 30 && rand_num < 60 {
+			newstr = "/F[+X]F[-X]+X"
+		} else if rand_num >= 60 {
+			newstr = "F[+X]dF[/-X]+X"
+		}
 	} else if char == "A" {
 		newstr = "-F-FF-F"
 	} else {
