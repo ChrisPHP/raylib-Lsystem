@@ -42,7 +42,7 @@ var (
 			Y: 1,
 			Z: 0,
 		},
-		Fovy:       45,
+		Fovy:       90,
 		Projection: rl.CameraPerspective,
 	}
 )
@@ -78,24 +78,25 @@ func update() {
 }
 func render() {
 	rl.BeginDrawing()
-
 	rl.BeginMode3D(camera)
 	if state == 1 {
 		drawScene()
 	}
 	rl.DrawGrid(10, 1)
-	rl.ClearBackground(rl.Black)
+	rl.ClearBackground(rl.RayWhite)
 	rl.EndMode3D()
 
 	rl.DrawRectangleRec(DrawButton, rl.DarkBlue)
 	rl.DrawRectangleRec(ClearButton, rl.Lime)
 	rl.DrawText("Draw Tree", 1750, 65, 20, rl.White)
 	rl.DrawText("Clear Tree", 1750, 115, 20, rl.White)
+	rl.DrawFPS(10, 10)
 	rl.EndDrawing()
 }
 
 func init() {
 	state = 1
+	rl.SetConfigFlags(rl.FlagMsaa4xHint)
 	rl.InitWindow(width, height, "L-system raylib")
 	rl.SetCameraMode(camera, rl.CameraFree)
 	rl.SetTargetFPS(60)
@@ -171,7 +172,8 @@ func draw_lsystem(instructions string, angle float32, distance float32) {
 			EndY := PosY + EndPosY
 			EndZ := PosZ + EndPosZ
 			//rl.DrawLineEx(rl.Vector2{X: PosX, Y: PosY}, rl.Vector2{X: EndX,Y: EndY}, 5, rl.Red)
-			rl.DrawLine3D(rl.Vector3{X: PosX, Y: PosY, Z: PosZ}, rl.Vector3{X: EndX, Y: EndY, Z: EndZ}, rl.Red)
+			rl.DrawCylinderEx(rl.Vector3{X: PosX, Y: PosY, Z: PosZ}, rl.Vector3{X: EndX, Y: EndY, Z: EndZ}, float32(0.2), float32(0.2), 4, rl.Red)
+			//rl.DrawLine3D(rl.Vector3{X: PosX, Y: PosY, Z: PosZ}, rl.Vector3{X: EndX, Y: EndY, Z: EndZ}, rl.Red)
 			PosX = EndX
 			PosY = EndY
 			PosZ = EndZ
