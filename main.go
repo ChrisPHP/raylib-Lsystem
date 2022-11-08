@@ -49,7 +49,7 @@ var (
 
 func drawScene() {
 	rl.DrawText(output, 0, 1000, 20, rl.Black)
-	draw_lsystem(output, 90, 0.5)
+	draw_lsystem(output, 20, 0.5)
 }
 
 func input(mouse rl.Vector2) {
@@ -126,11 +126,11 @@ func apply_rules(char string) string {
 	} else if char == "X" {
 		rand_num := rand.Intn(100-1+1) + 1
 		if rand_num <= 30 {
-			newstr = "F[+X]F[-X]+X"
+			newstr = "F[/+X]F[\\-X]+X"
 		} else if rand_num > 30 && rand_num < 60 {
-			newstr = "/F[+X]F[-X]+X"
+			newstr = "F[\\+X]F[\\-X]+X"
 		} else if rand_num >= 60 {
-			newstr = "F[+X]dF[/-X]+X"
+			newstr = "F[/+X]F[/-X]+X"
 		}
 	} else if char == "A" {
 		newstr = "-F-FF-F"
@@ -151,9 +151,9 @@ func process_string(oldString string) string {
 func polar_to_cartesian(radian float32, horizontal_angle float32, vertical_angle float32) (float32, float32, float32) {
 	theta_hori := horizontal_angle * math.Pi / 180
 	theta_verti := vertical_angle * math.Pi / 180
-	X := float64(radian) * math.Cos(float64(theta_verti)) * math.Cos(float64(theta_hori))
-	Y := float64(radian) * math.Sin(float64(theta_verti)) * math.Sin(float64(theta_hori))
-	Z := float64(radian) * math.Cos(float64(theta_verti))
+	X := float64(radian) * math.Cos(float64(theta_verti))
+	Y := float64(radian) * math.Sin(float64(theta_verti))
+	Z := float64(radian) * math.Cos(float64(theta_hori))
 	return float32(X), float32(Y), float32(Z)
 }
 
@@ -161,8 +161,8 @@ func draw_lsystem(instructions string, angle float32, distance float32) {
 	PosX := float32(0)
 	PosY := float32(0)
 	PosZ := float32(0)
-	vertical_angle := angle
-	horizontal_angle := angle
+	vertical_angle := float32(90)
+	horizontal_angle := float32(90)
 	stack := [][]float32{}
 	for _, char := range instructions {
 		cmd := string(char)
@@ -178,13 +178,13 @@ func draw_lsystem(instructions string, angle float32, distance float32) {
 			PosY = EndY
 			PosZ = EndZ
 		} else if cmd == "+" {
-			vertical_angle += 20
+			vertical_angle += angle
 		} else if cmd == "-" {
-			vertical_angle -= 20
+			vertical_angle -= angle
 		} else if cmd == "/" {
-			horizontal_angle += 20
-		} else if cmd == "d" {
-			horizontal_angle -= 20
+			horizontal_angle += angle
+		} else if cmd == "\\" {
+			horizontal_angle -= angle
 		} else if cmd == "[" {
 			stack = append(stack, []float32{PosX, PosY, PosZ, vertical_angle, horizontal_angle, distance})
 		} else if cmd == "]" {
